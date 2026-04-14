@@ -1,0 +1,284 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.desktop{background:linear-gradient(180deg,#1a6abf 0%,#4ea0e8 48%,#5ab830 48%,#3a8a18 100%);min-height:100vh;padding:10px;display:flex;flex-direction:column}
+.app{background:#d4d0c8;border:2px solid #0a246a;border-radius:4px;overflow:hidden;font-family:Tahoma,Arial,sans-serif;font-size:14px;display:flex;flex-direction:column;flex:1;min-height:calc(100vh - 20px)}
+.titlebar{background:linear-gradient(to right,#0a246a 0%,#1e5bbd 50%,#a6b5d7 100%);padding:6px 10px;display:flex;align-items:center;justify-content:space-between;user-select:none;flex-shrink:0}
+.tleft{display:flex;align-items:center;gap:10px;color:#fff;font-weight:bold;font-size:15px}
+.cdlogo{width:26px;height:26px;background:radial-gradient(circle at 35% 30%,#eee 12%,#aaa 38%,#777 58%,#444 100%);border-radius:50%;border:2px solid #ccc;flex-shrink:0;position:relative}
+.cdlogo::after{content:'';position:absolute;top:50%;left:50%;width:7px;height:7px;background:#d4d0c8;border-radius:50%;transform:translate(-50%,-50%)}
+.tyellow{color:#ffff00}
+.wbtns{display:flex;gap:3px}
+.wb{width:24px;height:20px;border-radius:2px;border:1px solid rgba(0,0,0,.5);font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:bold;background:#d4d0c8;color:#000}
+.wb.cl{background:#cc4444;color:#fff}
+.main{display:grid;grid-template-columns:220px 1fr;flex:1;background:#ece9d8;min-height:0}
+.sidebar{background:#3a6ea5;padding:10px;display:flex;flex-direction:column;gap:3px}
+.stitle{color:#fff;font-weight:bold;font-size:13px;padding:6px 4px 5px}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:3px;cursor:pointer;color:#fff;font-size:14px}
+.ni:hover{background:rgba(255,255,255,.15)}
+.ni.active{background:#1a3f6f}
+.nic{font-size:16px;width:22px;text-align:center;flex-shrink:0}
+.sf{margin-top:auto;background:rgba(0,0,0,.2);border-radius:3px;padding:12px;color:#fff;font-size:12px;line-height:2.2}
+.online{color:#7fff7f;font-weight:bold}
+.content{padding:14px;display:flex;flex-direction:column;gap:11px;min-height:0;overflow-y:auto}
+.tabs{display:flex;gap:2px;border-bottom:2px solid #aca899;flex-shrink:0}
+.tab{padding:6px 20px;border:1px solid #aca899;border-bottom:none;border-radius:3px 3px 0 0;background:#cdc8b9;cursor:pointer;font-size:13px;color:#333}
+.tab.active{background:#ece9d8;border-bottom:2px solid #ece9d8;margin-bottom:-2px;font-weight:bold}
+.tabpanel{display:none;flex-direction:column;gap:11px;flex:1}
+.tabpanel.active{display:flex}
+.etable{width:100%;border-collapse:collapse;background:#fff;border:1px solid #aca899;font-size:13px;table-layout:fixed}
+.etable th{background:#e6e3d5;padding:8px 12px;text-align:left;border-bottom:1px solid #aca899;border-right:1px solid #aca899;font-weight:bold}
+.etable td{padding:8px 12px;border-bottom:1px solid #e6e3d5;border-right:1px solid #e6e3d5}
+.etable tr.avail td{cursor:pointer}
+.etable tr.avail:hover td{background:#d5e5f5}
+.etable tr.avail.playing td{background:#cce0ff}
+.etable tr.wait td{color:#999;cursor:default}
+.sdispon{color:#2a8a2a;font-weight:bold}
+.saguarde{color:#996600}
+.fileinput{display:none}
+.load-btn{font-size:12px;padding:3px 9px;border-radius:2px;border:1px solid #888;background:linear-gradient(to bottom,#f0ede0,#c8c5b8);cursor:pointer}
+.load-btn:hover{background:linear-gradient(to bottom,#e0ddd0,#b0ada0)}
+.player{background:#c8c5b8;border:2px solid;border-color:#888 #fff #fff #888;border-radius:3px;padding:12px 16px;display:flex;flex-direction:column;gap:10px;flex-shrink:0}
+.prow{display:flex;align-items:center;gap:10px}
+.cbtn{width:38px;height:34px;background:linear-gradient(to bottom,#4ca8ee,#1060bc);color:#fff;border:1px solid #0a3a8a;border-radius:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.cbtn.neu{background:linear-gradient(to bottom,#f0ede0,#c8c5b8);color:#333;border-color:#888}
+.cbtn:disabled{opacity:.4;cursor:not-allowed}
+.seekwrap{flex:1;height:20px;background:#b0aba0;border:1px solid;border-color:#666 #ddd #ddd #666;border-radius:2px;position:relative;cursor:pointer}
+.seekfill{height:100%;background:linear-gradient(to bottom,#8ee040,#3a9400);border-radius:2px 0 0 2px;pointer-events:none;width:0%}
+.seekthumb{position:absolute;top:50%;width:14px;height:22px;background:#555;border-radius:2px;transform:translate(-50%,-50%);cursor:ew-resize;left:0%}
+.inforow{display:flex;align-items:center;gap:10px;font-size:12px;color:#333}
+.np{font-weight:bold;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.timedisp{font-family:monospace;font-size:13px;white-space:nowrap}
+input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400}
+.botrow{display:flex;gap:10px;align-items:flex-start;flex-shrink:0}
+.gbtn{display:flex;align-items:center;gap:10px;border-radius:5px;padding:11px 22px;font-size:14px;font-weight:bold;cursor:pointer;border:2px solid;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.35);text-decoration:none;white-space:nowrap}
+.gbtn.spot{background:linear-gradient(to bottom,#72e040,#3a9900);border-color:#2a7000}
+.gbtn.sub{background:linear-gradient(to bottom,#f5c84a,#d47800);border-color:#a06000}
+.gbtn:hover{filter:brightness(1.08)}
+.gbtn.off{opacity:.6;cursor:not-allowed;pointer-events:none}
+.spotcircle{width:24px;height:24px;background:#1db954;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0}
+.liw{background:#fff;border:1px solid #aca899;border-radius:3px;width:220px;font-size:12px;overflow:hidden;flex-shrink:0}
+.liwh{background:#0a66c2;color:#fff;padding:8px 10px;font-weight:bold;font-size:13px;display:flex;align-items:center;gap:7px}
+.liicon{background:#fff;color:#0a66c2;border-radius:2px;padding:2px 6px;font-size:12px;font-weight:900;line-height:1.3}
+.liwst{padding:6px 10px;font-weight:bold;background:#e8e4d8;border-bottom:1px solid #ddd;font-size:12px}
+.liwitem{padding:6px 10px;border-bottom:1px solid #eee;display:flex;align-items:flex-start;gap:6px;line-height:1.5}
+.liwdot{color:#0a66c2;flex-shrink:0}
+.tarea{background:#fff;border:1px solid #aca899;padding:16px;flex:1;font-size:13px;line-height:1.9;color:#222;overflow-y:auto}
+.tarea h4{font-size:14px;font-weight:bold;margin-bottom:10px;color:#1a3f6f;border-bottom:1px solid #ddd;padding-bottom:6px}
+.tarea p{margin-bottom:10px}
+.tarea .ts{color:#888;font-style:italic;font-size:12px}
+.rarea{background:#fff;border:1px solid #aca899;padding:16px;flex:1;font-size:13px;overflow-y:auto}
+.rarea h4{font-size:14px;font-weight:bold;margin-bottom:12px;color:#1a3f6f;border-bottom:1px solid #ddd;padding-bottom:6px}
+.rsec{margin-bottom:16px}
+.rsec h5{font-size:13px;font-weight:bold;color:#444;border-bottom:1px solid #eee;padding-bottom:4px;margin-bottom:8px}
+.rlink{display:flex;align-items:flex-start;gap:8px;padding:5px 0;color:#0a3a8a;text-decoration:none;font-size:12px;line-height:1.5;border-bottom:1px solid #f5f5f5}
+.rlink:hover{text-decoration:underline;background:#f8f8f5}
+.ri{flex-shrink:0;font-size:14px;width:20px;text-align:center}
+</style>
+
+<div class="desktop">
+<div class="app">
+  <div class="titlebar">
+    <div class="tleft">
+      <div class="cdlogo"></div>
+      Bê-à-Block &nbsp;—&nbsp; <span class="tyellow">O podcast sobre a nova internet</span>
+    </div>
+    <div class="wbtns">
+      <div class="wb">_</div><div class="wb">□</div><div class="wb cl">✕</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="sidebar">
+      <div class="stitle">Menu</div>
+      <div class="ni active" onclick="setNav(this)"><span class="nic">🏠</span>Início</div>
+      <div class="ni" onclick="setNav(this)"><span class="nic">☰</span>Episódios</div>
+      <div class="ni" onclick="setNav(this)"><span class="nic">ℹ</span>Sobre</div>
+      <div class="ni" onclick="setNav(this)"><span class="nic">✉</span>Contato</div>
+      <div class="sf">
+        Status: <span class="online">Online</span><br>
+        Ouvintes: <strong>12.345</strong>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('ep',this)">Episódios</div>
+        <div class="tab" onclick="switchTab('tr',this)">Transcrição</div>
+        <div class="tab" onclick="switchTab('rec',this)">Recursos</div>
+      </div>
+
+      <div id="panel-ep" class="tabpanel active">
+        <table class="etable">
+          <thead>
+            <tr>
+              <th style="width:38%">Título do Episódio</th>
+              <th style="width:16%">Data</th>
+              <th style="width:13%">Duração</th>
+              <th style="width:17%">Estado</th>
+              <th style="width:16%">Ficheiro</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="row0" class="avail" onclick="playRow(0)">
+              <td>Episódio 1</td><td>30/04/2026</td>
+              <td id="dur0">05:15</td>
+              <td class="sdispon">✔ Disponível</td>
+              <td onclick="event.stopPropagation()">
+                <button class="load-btn" onclick="triggerFile(0)">📂 epi.1</button>
+                <input class="fileinput" id="fi0" type="file" accept="audio/*" onchange="loadFile(0,this)">
+              </td>
+            </tr>
+            <tr id="row1" class="wait">
+              <td>Episódio 2</td><td>07/05/2026</td><td>05:47</td>
+              <td class="saguarde">⌛ Aguarde</td><td></td>
+            </tr>
+            <tr id="row2" class="wait">
+              <td>Episódio 3</td><td>14/05/2026</td><td>06:12</td>
+              <td class="saguarde">⌛ Aguarde</td><td></td>
+            </tr>
+            <tr id="row3" class="wait">
+              <td>Episódio 4</td><td>21/05/2026</td><td>05:36</td>
+              <td class="saguarde">⌛ Aguarde</td><td></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="player">
+          <div class="prow">
+            <button class="cbtn neu" id="prevBtn" disabled>⏮</button>
+            <button class="cbtn" id="playBtn" onclick="togglePlay()" disabled>▶</button>
+            <button class="cbtn neu" id="nextBtn" disabled>⏭</button>
+            <div class="seekwrap" id="seekWrap" onclick="seekClick(event)">
+              <div class="seekfill" id="seekFill"></div>
+              <div class="seekthumb" id="seekThumb"></div>
+            </div>
+            <span style="font-size:19px;cursor:pointer" onclick="toggleMute()">🔊</span>
+          </div>
+          <div class="inforow">
+            <span class="np" id="nowPlaying">Nenhum ficheiro carregado — clique em 📂 epi.1 para começar</span>
+            <span class="timedisp" id="timeDisp">–:–– / –:––</span>
+            <span style="font-size:13px">🔉</span>
+            <input type="range" class="vol" id="volSlider" min="0" max="100" value="80" oninput="setVol(this.value)">
+          </div>
+        </div>
+
+        <div class="botrow">
+          <div class="gbtn spot off">
+            <div class="spotcircle">♫</div>Ouvir no Spotify
+          </div>
+          <a class="gbtn sub" href="https://rss.com/podcasts/beablock/" target="_blank">
+            📡 Subscrever
+          </a>
+          <div style="flex:1"></div>
+          <div class="liw">
+            <div class="liwh"><span class="liicon">in</span> LinkedIn Feed</div>
+            <div class="liwst">Últimas Novidades</div>
+            <div class="liwitem"><span class="liwdot">●</span>Novo episódio disponível!</div>
+            <div class="liwitem"><span class="liwdot">●</span>Live Stream esta sexta!</div>
+            <div class="liwitem"><span class="liwdot">●</span>Convidado especial em breve!</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="panel-tr" class="tabpanel">
+        <div class="tarea">
+          <h4>Transcrição — Episódio 1</h4>
+          <p class="ts">Selecione um episódio disponível para ver a transcrição completa.</p>
+          <p><strong>[00:00]</strong> Bem-vindos ao Bê-à-Block, o podcast sobre a nova internet. Sou o vosso anfitrião e hoje vamos falar sobre como a tecnologia blockchain está a mudar a forma como interagimos online.</p>
+          <p><strong>[00:45]</strong> Começamos por explorar os conceitos fundamentais: o que é exactamente uma blockchain, como funciona a descentralização e porque é que isto importa para o utilizador comum.</p>
+          <p><strong>[02:10]</strong> A blockchain pode ser descrita de forma simples como um livro de registos partilhado — imagine uma folha de cálculo que milhares de computadores têm em simultâneo, e onde ninguém pode apagar ou alterar entradas antigas sem que toda a rede o saiba.</p>
+          <p><strong>[03:30]</strong> Esta propriedade — a imutabilidade — é o que torna a blockchain tão poderosa para transacções financeiras, contratos digitais, e até para a identidade online.</p>
+          <p><strong>[04:50]</strong> No próximo episódio aprofundamos os casos de uso práticos. Obrigado por ouvirem e até já!</p>
+        </div>
+      </div>
+
+      <div id="panel-rec" class="tabpanel">
+        <div class="rarea">
+          <h4>Recursos — Episódio 1</h4>
+          <div class="rsec">
+            <h5>📰 Artigos</h5>
+            <a class="rlink" href="https://pt.wikipedia.org/wiki/Blockchain" target="_blank">
+              <span class="ri">🔗</span>Wikipedia — O que é uma Blockchain (pt)
+            </a>
+            <a class="rlink" href="https://observador.pt/explicadores/blockchain/" target="_blank">
+              <span class="ri">🔗</span>Observador — Blockchain explicada de forma simples
+            </a>
+            <a class="rlink" href="https://www.dn.pt/tecnologia/blockchain" target="_blank">
+              <span class="ri">🔗</span>Diário de Notícias — Blockchain: o que muda para as empresas
+            </a>
+          </div>
+          <div class="rsec">
+            <h5>🎬 Vídeos</h5>
+            <a class="rlink" href="https://www.youtube.com/results?search_query=blockchain+explicado+portugu%C3%AAs" target="_blank">
+              <span class="ri">▶</span>YouTube — Blockchain explicado em português
+            </a>
+          </div>
+          <div class="rsec">
+            <h5>📡 Subscrever o Podcast</h5>
+            <a class="rlink" href="https://rss.com/podcasts/beablock/" target="_blank">
+              <span class="ri">📡</span>Feed RSS — Bê-à-Block no rss.com
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<audio id="audioEl"></audio>
+
+<script>
+const audio=document.getElementById('audioEl');
+const sources=[null];
+const epNames=['Episódio 1'];
+let currentIdx=-1;
+function fmt(s){if(!isFinite(s))return'–:––';const m=Math.floor(s/60),sec=Math.floor(s%60);return m+':'+(sec<10?'0':'')+sec;}
+function triggerFile(i){document.getElementById('fi'+i).click();}
+function loadFile(i,input){
+  const file=input.files[0];if(!file)return;
+  const url=URL.createObjectURL(file);
+  if(sources[i])URL.revokeObjectURL(sources[i]);
+  sources[i]=url;
+  const tmp=new Audio(url);
+  tmp.addEventListener('loadedmetadata',()=>{document.getElementById('dur'+i).textContent=fmt(tmp.duration);});
+  if(currentIdx===i)audio.src=url;
+  updateBtns();
+}
+function playRow(i){
+  if(!sources[i]){triggerFile(i);return;}
+  if(currentIdx===i){togglePlay();return;}
+  currentIdx=i;audio.src=sources[i];audio.play();
+  document.getElementById('nowPlaying').textContent='A reproduzir: '+epNames[i];
+  document.querySelectorAll('.etable tbody tr').forEach((r,j)=>r.classList.toggle('playing',j===i));
+  updateBtns();
+}
+function togglePlay(){if(!audio.src)return;audio.paused?audio.play():audio.pause();}
+function toggleMute(){audio.muted=!audio.muted;}
+function setVol(v){audio.volume=v/100;}
+function seekClick(e){
+  if(!audio.duration)return;
+  const rect=e.currentTarget.getBoundingClientRect();
+  const pct=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+  audio.currentTime=pct*audio.duration;
+}
+function updateBtns(){document.getElementById('playBtn').disabled=currentIdx<0&&!sources[0];}
+audio.addEventListener('timeupdate',()=>{
+  const pct=audio.duration?(audio.currentTime/audio.duration)*100:0;
+  document.getElementById('seekFill').style.width=pct+'%';
+  document.getElementById('seekThumb').style.left=pct+'%';
+  document.getElementById('timeDisp').textContent=fmt(audio.currentTime)+' / '+fmt(audio.duration);
+});
+audio.addEventListener('play',()=>{document.getElementById('playBtn').textContent='⏸';});
+audio.addEventListener('pause',()=>{document.getElementById('playBtn').textContent='▶';});
+audio.addEventListener('ended',()=>{document.getElementById('playBtn').textContent='▶';});
+function setNav(el){document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));el.classList.add('active');}
+function switchTab(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+}
+</script>
