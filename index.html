@@ -153,9 +153,9 @@ input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400
         </div>
 
         <div class="botrow">
-          <!-- <div class="gbtn spot"><div class="spotcircle">♫</div>Ouvir no Spotify</div> -->
-          <a class="gbtn spot" href="https://open.spotify.com/show/5y1uVkknNMgMpfkbd4KcZX?si=c586e7eba94f4d6c" target="_blank">♫ Ouvir no Spotify</a>
-          <a class="gbtn sub" href="https://rss.com/podcasts/beablock/" target="_blank">📡 Subscrever</a>
+          <!-- <div class="gbtn spot off"><div class="spotcircle">♫</div>Ouvir no Spotify</div> -->
+          <a class="gbtn spot" href="https://open.spotify.com/show/5y1uVkknNMgMpfkbd4KcZX?si=827f2a74e9df424c" target="_blank">♫ Ouvir no Spotify</a>
+          <a class="gbtn sub" href="https://rss.com/podcasts/beablock/" target="_blank">📡 Subscrever RSS</a>
           <div style="flex:1"></div>
           <div class="liw">
             <a class="liwh" href="https://www.linkedin.com/company/beablock" target="_blank">
@@ -213,24 +213,24 @@ input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400
 </div>
 
 <audio id="audioEl"></audio>
+
 <script>
 const audio = document.getElementById('audioEl');
 
-/* ── CounterAPI ─────────────────────────────────────────── */
+/* ── CounterAPI — correct workspace/slug from your account ─
+   Endpoint pattern: /v1/{workspace_slug}/{counter_slug}      */
 const WORKSPACE   = 'altino-coelhos-team-3980';
 const SLUG        = 'first-counter-3980';
-const API_BASE    = `https://api.counterapi.dev/v2/${WORKSPACE}/${SLUG}`;
-const COUNTER_GET = API_BASE;
-const COUNTER_UP  = `${API_BASE}/up`;
-
-const PROXY = 'https://corsproxy.io/?url=';
+const API_BASE    = `https://api.counterapi.dev/v1/${WORKSPACE}/${SLUG}`;
+const COUNTER_GET = API_BASE;           // GET  → data.up_count
+const COUNTER_UP  = `${API_BASE}/up`;  // GET  → data.up_count (increments)
 
 /* ── Local audio map ─────────────────────────────────────── */
 const LOCAL_AUDIO = {
   1: './epi/epi_1.mp3',
-  2: './epi/epi_2.mp3',
-  3: './epi/epi_3.mp3',
-  4: './epi/epi_4.mp3'
+  2: './epi/episode_2.wav',
+  3: './epi/episode_3.wav',
+  4: './epi/episode_4.wav'
 };
 
 const FUTURE_EPS = [
@@ -240,47 +240,20 @@ const FUTURE_EPS = [
 ];
 
 const FEED_URL = 'https://media.rss.com/beablock/feed.xml';
+const PROXY    = 'https://corsproxy.io/?url=';
 
 let episodes   = [];
 let currentIdx = -1;
 let countedThisSession = new Set();
 
 /* ── Helpers ─────────────────────────────────────────────── */
-function fmt(s){
-  if(!isFinite(s) || s < 0) return '–:––';
-
-  const m = Math.floor(s / 60);
-  const sec = Math.floor(s % 60);
-
-  return m + ':' + (sec < 10 ? '0' : '') + sec;
-}
-
+function fmt(s){if(!isFinite(s)||s<0)return'–:––';const m=Math.floor(s/60),sec=Math.floor(s%60);return m+':'+(sec<10?'0':'')+sec;}
 function fmtDuration(str){
-  if(!str) return '–:––';
-
-  str = String(str).trim();
-
-  if(str === '–:––') return str;
-
-  const parts = str.split(':').map(n => Number(n));
-
-  // Invalid numbers → fallback
-  if(parts.some(n => isNaN(n))) return '–:––';
-
-  if(parts.length === 3){
-    return fmt(parts[0]*3600 + parts[1]*60 + parts[2]);
-  }
-
-  if(parts.length === 2){
-    return fmt(parts[0]*60 + parts[1]);
-  }
-
-  // If it's just seconds like "123"
-  if(parts.length === 1){
-    return fmt(parts[0]);
-  }
-
-  return '–:––';
+  if(!str||str==='–:––')return'–:––';
+  const p=str.split(':').map(Number);
+  if(p.length===3)return fmt(p[0]*3600+p[1]*60+p[2]);
+  if(p.length===2)return fmt(p[0]*60+p[1]);
+  return str;
 }
 function fmtDate(str){if(!str)return'–';try{return new Date(str).toLocaleDateString('pt-PT');}catch(e){return str;}}
 function setStatus(msg,state){
@@ -296,43 +269,33 @@ function displayCount(n){
   if(b) b.textContent = v + ' ▶';
 }
 
-/* ── Fetch current count ─────────────────────────────────── */
+/* ── Fetch current count (read-only, no increment) ──────── */
 async function fetchCount(){
   try{
-    const res  = await fetch(PROXY + encodeURIComponent(COUNTER_GET));
+    const res  = await fetch(COUNTER_GET);
     const json = await res.json();
-
-    displayCount(json?.data?.up_count ?? null);
-
+    /* Response structure: { code:"200", data:{ up_count:N, ... } } */
+    displayCount(json?.data?.up_count);
   } catch(e){
-    console.error('fetchCount error:', e);
     displayCount(null);
   }
 }
 
-/* ── Increment counter ───────────────────────────────────── */
+/* ── Increment counter (once per episode per session) ────── */
 async function incrementCount(epNumber){
   if(countedThisSession.has(epNumber)) return;
   countedThisSession.add(epNumber);
-
   try{
-    const res  = await fetch(
-      PROXY + encodeURIComponent(COUNTER_UP + '?t=' + Date.now())
-    );
+    const res  = await fetch(COUNTER_UP);
     const json = await res.json();
-
-    displayCount(json?.data?.up_count ?? null);
-
-  } catch(e){
-    console.error('increment error:', e);
-  }
+    displayCount(json?.data?.up_count);
+  } catch(e){ /* non-critical — player still works */ }
 }
 
 /* ── RSS fetch ───────────────────────────────────────────── */
 async function fetchFeed(){
   setStatus('A carregar feed RSS…','loading');
   let xml=null;
-
   for(const url of [FEED_URL, PROXY+encodeURIComponent(FEED_URL)]){
     try{
       const res=await fetch(url); if(!res.ok)continue;
@@ -349,7 +312,7 @@ async function fetchFeed(){
         duration:item.querySelector('duration')?.textContent||'',
         inRSS:true
       }))
-    : [{number:1,title:'Ep. 1 — A evolução da internet',pubDate:'Wed, 30 Apr 2026',duration:'4:42',inRSS:true}];
+    : [{number:1,title:'Ep. 1 — A evolução da internet: Web1, Web2 e Web3',pubDate:'Wed, 30 Apr 2026',duration:'4:42',inRSS:true}];
 
   const rssNumbers=new Set(rssEps.map(e=>e.number));
   const placeholders=FUTURE_EPS.filter(e=>!rssNumbers.has(e.number)).map(e=>({...e,inRSS:false}));
@@ -361,7 +324,11 @@ async function fetchFeed(){
   renderTable();
   primeFirst();
 
-  setStatus('Feed carregado','ok');
+  const avail=episodes.filter(e=>e.inRSS).length;
+  const msg=xml
+    ?`Feed RSS carregado — ${avail} episódio(s) disponível(is) de ${episodes.length}`
+    :'Feed RSS indisponível — a usar dados locais.';
+  setStatus(msg, xml?'ok':'err');
 }
 
 /* ── Render table ────────────────────────────────────────── */
@@ -370,50 +337,87 @@ function renderTable(){
     if(ep.inRSS){
       const badge=ep.number===1?`<span class="plays-badge" id="plays-badge-0">… ▶</span>`:'';
       return `<tr id="row${i}" class="avail" onclick="playRow(${i})">
-        <td>${ep.title}</td>
-        <td>${fmtDate(ep.pubDate)}</td>
+        <td>${ep.title}</td><td>${fmtDate(ep.pubDate)}</td>
         <td>${fmtDuration(ep.duration)}</td>
-        <td><span class="sdispon">✔ Disponível</span></td>
+        <td><span class="sdispon">✔ Disponível</span>${badge}</td>
       </tr>`;
     }
-    return `<tr class="future">
-      <td>${ep.title}</td>
-      <td>${ep.pubDate}</td>
+    return `<tr id="row${i}" class="future">
+      <td>${ep.title}</td><td>${ep.pubDate}</td>
       <td>${ep.duration}</td>
       <td><span class="saguarde">⌛ Aguarde</span></td>
     </tr>`;
   }).join('');
-
-  fetchCount(); // ✅ correct place
+  /* refresh badge with live count after DOM is ready */
+  fetchCount();
 }
 
-/* ── Player ─────────────────────────────────────────────── */
+/* ── Prime player on first available ep (no autoplay) ────── */
 function primeFirst(){
   const i=episodes.findIndex(e=>e.inRSS);
   if(i<0)return;
   currentIdx=i;
   document.getElementById('nowPlaying').textContent=episodes[i].title;
+  document.getElementById('timeDisp').textContent='0:00 / '+fmtDuration(episodes[i].duration);
   document.getElementById('playBtn').disabled=false;
+  highlightRow(i); updateNavBtns();
 }
 
+/* ── Playback ────────────────────────────────────────────── */
 function playRow(i){
   if(!episodes[i]?.localAudio)return;
-
+  if(currentIdx===i&&audio.src){togglePlay();return;}
   currentIdx=i;
   audio.src=episodes[i].localAudio;
-
   audio.play()
     .then(()=>incrementCount(episodes[i].number))
-    .catch(()=>setStatus('Erro ao reproduzir','err'));
-
-  document.getElementById('nowPlaying').textContent=episodes[i].title;
+    .catch(()=>setStatus('Ficheiro não encontrado: '+episodes[i].localAudio,'err'));
+  document.getElementById('nowPlaying').textContent='A reproduzir: '+episodes[i].title;
+  highlightRow(i); updateNavBtns();
 }
-
 function togglePlay(){
+  if(!audio.src&&currentIdx>=0&&episodes[currentIdx]?.localAudio) audio.src=episodes[currentIdx].localAudio;
   if(!audio.src)return;
-  audio.paused ? audio.play() : audio.pause();
+  if(audio.paused){audio.play().then(()=>incrementCount(episodes[currentIdx].number)).catch(()=>{});}
+  else audio.pause();
+}
+function highlightRow(i){document.querySelectorAll('#epTbody tr').forEach((r,j)=>r.classList.toggle('playing',j===i));}
+function updateNavBtns(){
+  document.getElementById('prevBtn').disabled=currentIdx<=0||!episodes.slice(0,currentIdx).some(e=>e.localAudio);
+  document.getElementById('nextBtn').disabled=currentIdx>=episodes.length-1||!episodes.slice(currentIdx+1).some(e=>e.localAudio);
+}
+document.getElementById('prevBtn').addEventListener('click',()=>{for(let i=currentIdx-1;i>=0;i--)if(episodes[i]?.localAudio){playRow(i);break;}});
+document.getElementById('nextBtn').addEventListener('click',()=>{for(let i=currentIdx+1;i<episodes.length;i++)if(episodes[i]?.localAudio){playRow(i);break;}});
+
+function toggleMute(){audio.muted=!audio.muted;}
+function setVol(v){audio.volume=v/100;}
+function seekClick(e){
+  if(!audio.duration)return;
+  const r=e.currentTarget.getBoundingClientRect();
+  audio.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*audio.duration;
+}
+audio.addEventListener('timeupdate',()=>{
+  const pct=audio.duration?(audio.currentTime/audio.duration)*100:0;
+  document.getElementById('seekFill').style.width=pct+'%';
+  document.getElementById('seekThumb').style.left=pct+'%';
+  document.getElementById('timeDisp').textContent=fmt(audio.currentTime)+' / '+fmt(audio.duration);
+});
+audio.addEventListener('play', ()=>{document.getElementById('playBtn').textContent='⏸';});
+audio.addEventListener('pause',()=>{document.getElementById('playBtn').textContent='▶';});
+audio.addEventListener('ended',()=>{
+  document.getElementById('playBtn').textContent='▶';
+  for(let i=currentIdx+1;i<episodes.length;i++)if(episodes[i]?.localAudio){playRow(i);break;}
+});
+audio.addEventListener('error',()=>{if(audio.src)setStatus('Ficheiro não encontrado: '+(episodes[currentIdx]?.localAudio||'–'),'err');});
+
+function setNav(el){document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));el.classList.add('active');}
+function switchTab(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
 }
 
-/* ── Init ───────────────────────────────────────────────── */
-fetchFeed(); // ✅ only call
+fetchCount();
+fetchFeed();
 </script>
