@@ -98,6 +98,14 @@ input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400
 .sdot.ok{background:#2a8a2a}
 .sdot.err{background:#cc3333}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.liwrow {
+  display: flex;
+  align-items: center;
+  /* gap: 8px; */
+  margin-left: 15px;
+  /* margin-right: -15px; */
+}
 </style>
 
 <div class="desktop">
@@ -115,7 +123,8 @@ input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400
   <div class="main">
     <div class="sidebar">
       <div class="stitle">Menu</div>
-      <div class="ni active" onclick="switchView('episodios',this)"><span class="nic">🏠</span>Início</div>
+      <!-- <div class="ni active" onclick="switchView('episodios',this)"><span class="nic">🏠</span>Início</div> -->
+      <div class="ni active" onclick="switchView('episodios',this,'ep')"><span class="nic">🏠</span>Início</div>
       <div class="ni" onclick="switchView('episodios',this)"><span class="nic">☰</span>Episódios</div>
       <div class="ni" onclick="switchView('sobre',this)"><span class="nic">ℹ</span>Sobre</div>
       <div class="ni" onclick="switchView('contato',this)"><span class="nic">✉</span>Contato</div>
@@ -179,9 +188,18 @@ input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400
             </a>
             <div class="liwst">Últimas atualizações </div>
             <!-- <div class="liwitem"><span class="liwdot">●</span>Hoje é 1 de maio</div> -->
-            <a class="liwitem" href="https://www.linkedin.com/posts/beablock_hoje-%C3%A9-1-de-maio-dia-do-trabalhador-dia-activity-7455950282653429760-k1zz/" target="_blank"><span class="liwdot">●</span>Hoje é 1 de maio</a>
-            <a class="liwitem" href="https://www.linkedin.com/posts/beablock_%C3%A9-amanh%C3%A3-o-b%C3%AA-%C3%A0-block-estreia-no-dia-1-activity-7455631547904266240-XobU/" target="_blank"><span class="liwdot">●</span>É amanhã</a>
-            <a class="liwitem" href="https://www.linkedin.com/posts/beablock_lembra-se-da-primeira-vez-que-ouviu-falar-activity-7455358117401513985-3Hn2/" target="_blank"><span class="liwdot">●</span>A nova internet não espera</a>
+<div class="liwrow">
+             <span class="liwdot">●</span><a class="liwitem" href="https://www.linkedin.com/posts/beablock_hoje-%C3%A9-1-de-maio-dia-do-trabalhador-dia-activity-7455950282653429760-k1zz/" target="_blank">Hoje é 1 de maio</a>
+</div>      
+<div class="liwrow">
+            <span class="liwdot">●</span><a class="liwitem" href="https://www.linkedin.com/posts/beablock_%C3%A9-amanh%C3%A3-o-b%C3%AA-%C3%A0-block-estreia-no-dia-1-activity-7455631547904266240-XobU/" target="_blank">É amanhã</a>
+</div>    
+<div class="liwrow">
+            <span class="liwdot">●</span><a class="liwitem" href="https://www.linkedin.com/posts/beablock_lembra-se-da-primeira-vez-que-ouviu-falar-activity-7455358117401513985-3Hn2/" target="_blank">A nova internet não espera</a>
+</div>          
+            <!-- <span class="liwdot"></span><a class="liwitem" href="https://www.linkedin.com/posts/beablock_hoje-%C3%A9-1-de-maio-dia-do-trabalhador-dia-activity-7455950282653429760-k1zz/" target="_blank">Hoje é 1 de maio</a> -->
+            <!-- <span class="liwdot">●</span><a class="liwitem" href="https://www.linkedin.com/posts/beablock_%C3%A9-amanh%C3%A3-o-b%C3%AA-%C3%A0-block-estreia-no-dia-1-activity-7455631547904266240-XobU/" target="_blank">É amanhã</a> -->
+            <!-- <span class="liwdot">●</span><a class="liwitem" href="https://www.linkedin.com/posts/beablock_lembra-se-da-primeira-vez-que-ouviu-falar-activity-7455358117401513985-3Hn2/" target="_blank">A nova internet não espera</a> -->
             <div class="liwfooter"><a href="https://www.linkedin.com/company/beablock" target="_blank">→ Ver página no LinkedIn</a></div>
           </div>
         </div>
@@ -277,12 +295,12 @@ input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400
           <div class="rsec">
             <h5>📰 Artigos</h5>
             <a class="rlink" href="https://pt.wikipedia.org/wiki/Blockchain" target="_blank"><span class="ri">🔗</span>Wikipedia — O que é uma Blockchain (pt)</a>
-            <a class="rlink" href="https://observador.pt/explicadores/blockchain/" target="_blank"><span class="ri">🔗</span>Observador — Blockchain explicada de forma simples</a>
+            <a class="rlink" href="https://ethereum.org/pt-br/web3/" target="_blank"><span class="ri">🔗</span>ethereum.org – Introdução à Web3</a>
           </div>
-          <div class="rsec">
+          <!-- <div class="rsec">
             <h5>🎬 Vídeos</h5>
             <a class="rlink" href="https://www.youtube.com/results?search_query=blockchain+explicado+portugu%C3%AAs" target="_blank"><span class="ri">▶</span>YouTube — Blockchain explicado em português</a>
-          </div>
+          </div> -->
           <div class="rsec">
             <h5>📡 Feed do Podcast</h5>
             <a class="rlink" href="https://rss.com/podcasts/beablock/" target="_blank"><span class="ri">📡</span>Feed RSS — Bê-à-Block no rss.com</a>
@@ -330,7 +348,7 @@ const WORKSPACE='altino-coelhos-team-3980', SLUG='first-counter-3980';
 const API_BASE=`https://api.counterapi.dev/v1/${WORKSPACE}/${SLUG}`;
 const COUNTER_GET=API_BASE, COUNTER_UP=`${API_BASE}/up`;
 const LOCAL_AUDIO={1:'./epi/epi_1.mp3',2:'./epi/epi_2.mp3',3:'./epi/epi_3.mp3',4:'./epi/epi_4.mp3'};
-const FUTURE_EPS=[{number:2,title:'Episódio 2',pubDate:'07/05/2026',duration:'–:––'},{number:3,title:'Episódio 3',pubDate:'14/05/2026',duration:'–:––'},{number:4,title:'Episódio 4',pubDate:'21/05/2026',duration:'–:––'}];
+const FUTURE_EPS=[{number:2,title:'Episódio 2',pubDate:'08/05/2026',duration:'–:––'},{number:3,title:'Episódio 3',pubDate:'15/05/2026',duration:'–:––'},{number:4,title:'Episódio 4',pubDate:'22/05/2026',duration:'–:––'}];
 const FEED_URL='https://media.rss.com/beablock/feed.xml', PROXY='https://corsproxy.io/?url=';
 let episodes=[],currentIdx=-1,countedThisSession=new Set();
 
@@ -370,7 +388,9 @@ function fmtDuration(str){
 
   return '–:––';
 }
-function fmtDate(str){if(!str)return'–';try{return new Date(str).toLocaleDateString('pt-PT');}catch(e){return str;}}
+function fmtDate(str){{return '01/05/2026';}}
+
+// function fmtDate(str){if(!str)return'–';try{return new Date(str).toLocaleDateString('pt-PT');}catch(e){return str;}}
 function setStatus(msg,state){document.getElementById('statusMsg').textContent=msg;document.getElementById('statusDot').className='sdot '+(state||'');}
 function displayCount(n){const v=(n===null||n===undefined||isNaN(Number(n)))?'–':Number(n).toLocaleString('pt-PT');document.getElementById('sidebarPlays').textContent=v;const b=document.getElementById('plays-badge-0');if(b)b.textContent=v+' ▶';}
 async function fetchCount(){try{const r=await fetch(COUNTER_GET);const j=await r.json();displayCount(j?.data?.up_count);}catch(e){displayCount(null);}}
@@ -412,7 +432,19 @@ audio.addEventListener('play',()=>{document.getElementById('playBtn').textConten
 audio.addEventListener('pause',()=>{document.getElementById('playBtn').textContent='▶';});
 audio.addEventListener('ended',()=>{document.getElementById('playBtn').textContent='▶';for(let i=currentIdx+1;i<episodes.length;i++)if(episodes[i]?.localAudio){playRow(i);break;}});
 audio.addEventListener('error',()=>{if(audio.src)setStatus('Ficheiro não encontrado: '+(episodes[currentIdx]?.localAudio||'–'),'err');});
-function switchView(id,navEl){document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));navEl.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('view-'+id).classList.add('active');}
+// function switchView(id,navEl){document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));navEl.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('view-'+id).classList.add('active');}
+function switchView(id,navEl,resetTab){
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  navEl.classList.add('active');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  if(resetTab){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
+    document.querySelector(`.tab[onclick*="'${resetTab}'"]`)?.classList.add('active');
+    document.getElementById('panel-'+resetTab)?.classList.add('active');
+  }
+}
 function switchTab(id,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));el.classList.add('active');document.getElementById('panel-'+id).classList.add('active');}
 fetchCount();fetchFeed();
 </script>
