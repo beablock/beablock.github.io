@@ -21,7 +21,8 @@
 .sf{margin-top:auto;background:rgba(0,0,0,.2);border-radius:3px;padding:12px;color:#fff;font-size:12px;line-height:2.4}
 .online{color:#7fff7f;font-weight:bold}
 .plays-count{color:#ffe066;font-weight:bold}
-.content{padding:14px;display:flex;flex-direction:column;gap:11px;min-height:0;overflow-y:auto}
+.view{display:none;flex-direction:column;gap:11px;flex:1;padding:14px;min-height:0;overflow-y:auto}
+.view.active{display:flex}
 .tabs{display:flex;gap:2px;border-bottom:2px solid #aca899;flex-shrink:0}
 .tab{padding:6px 20px;border:1px solid #aca899;border-bottom:none;border-radius:3px 3px 0 0;background:#cdc8b9;cursor:pointer;font-size:13px;color:#333}
 .tab.active{background:#ece9d8;border-bottom:2px solid #ece9d8;margin-bottom:-2px;font-weight:bold}
@@ -66,10 +67,17 @@ input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400
 .liwfooter{padding:6px 10px;text-align:center;border-top:1px solid #ddd}
 .liwfooter a{color:#0a66c2;font-size:11px;text-decoration:none;font-weight:bold}
 .liwfooter a:hover{text-decoration:underline}
-.tarea{background:#fff;border:1px solid #aca899;padding:16px;flex:1;font-size:13px;line-height:1.9;color:#222;overflow-y:auto}
-.tarea h4{font-size:14px;font-weight:bold;margin-bottom:10px;color:#1a3f6f;border-bottom:1px solid #ddd;padding-bottom:6px}
-.tarea p{margin-bottom:10px}
-.tarea .ts{color:#888;font-style:italic;font-size:12px}
+/* transcript */
+.tarea{background:#fff;border:1px solid #aca899;padding:18px 22px;flex:1;font-size:13px;line-height:1.95;color:#222;overflow-y:auto}
+.tarea h4{font-size:15px;font-weight:bold;margin-bottom:4px;color:#1a3f6f}
+.tarea .ep-sub{font-size:12px;color:#888;margin-bottom:16px;border-bottom:1px solid #e0ddd5;padding-bottom:10px}
+.tr-block{margin-bottom:16px}
+.tr-label{display:inline-block;font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:2px;margin-bottom:5px}
+.tr-label.loc{background:#dde8f5;color:#1a3f6f;border:1px solid #b8cfea}
+.tr-label.sound{background:#f5f0dd;color:#7a6200;border:1px solid #e0d08a}
+.tr-block p{margin:0;color:#333}
+.tr-block.sound-block p{color:#8a7000;font-style:italic;font-size:12px}
+/* rarea */
 .rarea{background:#fff;border:1px solid #aca899;padding:16px;flex:1;font-size:13px;overflow-y:auto}
 .rarea h4{font-size:14px;font-weight:bold;margin-bottom:12px;color:#1a3f6f;border-bottom:1px solid #ddd;padding-bottom:6px}
 .rsec{margin-bottom:16px}
@@ -77,6 +85,13 @@ input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400
 .rlink{display:flex;align-items:flex-start;gap:8px;padding:5px 0;color:#0a3a8a;text-decoration:none;font-size:12px;line-height:1.5;border-bottom:1px solid #f5f5f5}
 .rlink:hover{text-decoration:underline}
 .ri{flex-shrink:0;font-size:14px;width:20px;text-align:center}
+/* info panels */
+.info-panel{background:#fff;border:1px solid #aca899;border-radius:3px;padding:24px 28px;font-size:13px;line-height:1.9;color:#222;flex:1}
+.info-panel h3{font-size:16px;font-weight:bold;color:#1a3f6f;margin-bottom:14px;border-bottom:2px solid #d0cfc5;padding-bottom:8px;display:flex;align-items:center;gap:8px}
+.info-panel p{margin-bottom:14px;max-width:680px}
+.info-panel strong{color:#1a3f6f}
+.contact-box{background:#f4f2e8;border:1px solid #d0ccc0;border-radius:3px;padding:16px 20px;margin-top:8px;font-size:13px;line-height:1.8;max-width:480px}
+.contact-box .email{font-family:monospace;font-size:13px;color:#333;background:#e8e6dc;padding:3px 8px;border-radius:2px;border:1px solid #c8c4b8;display:inline-block;margin-top:4px;user-select:all}
 .status-bar{background:#e8e4d8;border-top:1px solid #aca899;padding:4px 12px;font-size:11px;color:#555;display:flex;align-items:center;gap:6px;flex-shrink:0}
 .sdot{width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0}
 .sdot.loading{background:#f0a030;animation:pulse 1s infinite}
@@ -100,18 +115,19 @@ input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400
   <div class="main">
     <div class="sidebar">
       <div class="stitle">Menu</div>
-      <div class="ni active" onclick="setNav(this)"><span class="nic">🏠</span>Início</div>
-      <div class="ni" onclick="setNav(this)"><span class="nic">☰</span>Episódios</div>
-      <div class="ni" onclick="setNav(this)"><span class="nic">ℹ</span>Sobre</div>
-      <div class="ni" onclick="setNav(this)"><span class="nic">✉</span>Contato</div>
+      <div class="ni active" onclick="switchView('episodios',this)"><span class="nic">🏠</span>Início</div>
+      <div class="ni" onclick="switchView('episodios',this)"><span class="nic">☰</span>Episódios</div>
+      <div class="ni" onclick="switchView('sobre',this)"><span class="nic">ℹ</span>Sobre</div>
+      <div class="ni" onclick="switchView('contato',this)"><span class="nic">✉</span>Contato</div>
       <div class="sf">
         Status: <span class="online">Online</span><br>
-        Ouvintes: <strong>12.345</strong><br>
-        Reproduções: <span class="plays-count" id="sidebarPlays">…</span>
+        Ouvintes: <strong>37</strong><br>
+        <!-- Reproduções: <span class="plays-count" id="sidebarPlays">…</span> -->
       </div>
     </div>
 
-    <div class="content">
+    <!-- ══ EPISÓDIOS ══ -->
+    <div id="view-episodios" class="view active">
       <div class="tabs">
         <div class="tab active" onclick="switchTab('ep',this)">Episódios</div>
         <div class="tab" onclick="switchTab('tr',this)">Transcrição</div>
@@ -155,35 +171,106 @@ input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400
         <div class="botrow">
           <!-- <div class="gbtn spot off"><div class="spotcircle">♫</div>Ouvir no Spotify</div> -->
           <a class="gbtn spot" href="https://open.spotify.com/show/5y1uVkknNMgMpfkbd4KcZX?si=827f2a74e9df424c" target="_blank">♫ Ouvir no Spotify</a>
-          <a class="gbtn sub" href="https://rss.com/podcasts/beablock/" target="_blank">📡 Subscrever RSS</a>
+          <a class="gbtn sub" href="https://rss.com/podcasts/beablock/" target="_blank">📡 Subscrever</a>
           <div style="flex:1"></div>
           <div class="liw">
             <a class="liwh" href="https://www.linkedin.com/company/beablock" target="_blank">
               <span class="liicon">in</span> LinkedIn Feed
             </a>
-            <div class="liwst">Últimas Novidades</div>
-            <div class="liwitem"><span class="liwdot">●</span>Novo episódio disponível!</div>
-            <div class="liwitem"><span class="liwdot">●</span>Live Stream esta sexta!</div>
-            <div class="liwitem"><span class="liwdot">●</span>Convidado especial em breve!</div>
-            <div class="liwfooter">
-              <a href="https://www.linkedin.com/company/beablock" target="_blank">→ Ver página no LinkedIn</a>
-            </div>
+            <div class="liwst">Últimas atualizações </div>
+            <!-- <div class="liwitem"><span class="liwdot">●</span>Hoje é 1 de maio</div> -->
+            <a class="liwitem" href="https://www.linkedin.com/posts/beablock_hoje-%C3%A9-1-de-maio-dia-do-trabalhador-dia-activity-7455950282653429760-k1zz/" target="_blank"><span class="liwdot">●</span>Hoje é 1 de maio</a>
+            <a class="liwitem" href="https://www.linkedin.com/posts/beablock_%C3%A9-amanh%C3%A3-o-b%C3%AA-%C3%A0-block-estreia-no-dia-1-activity-7455631547904266240-XobU/" target="_blank"><span class="liwdot">●</span>É amanhã</a>
+            <a class="liwitem" href="https://www.linkedin.com/posts/beablock_lembra-se-da-primeira-vez-que-ouviu-falar-activity-7455358117401513985-3Hn2/" target="_blank"><span class="liwdot">●</span>A nova internet não espera</a>
+            <div class="liwfooter"><a href="https://www.linkedin.com/company/beablock" target="_blank">→ Ver página no LinkedIn</a></div>
           </div>
         </div>
       </div>
 
+      <!-- TRANSCRIÇÃO -->
       <div id="panel-tr" class="tabpanel">
         <div class="tarea">
-          <h4>Transcrição — Episódio 1</h4>
-          <p class="ts">Selecione um episódio disponível para ver a transcrição completa.</p>
-          <p><strong>[00:00]</strong> Bem-vindos ao Bê-à-Block, o podcast sobre a nova internet. Hoje vamos falar sobre como a tecnologia blockchain está a mudar a forma como interagimos online.</p>
-          <p><strong>[00:45]</strong> Começamos por explorar os conceitos fundamentais: o que é exactamente uma blockchain, como funciona a descentralização e porque é que isto importa para o utilizador comum.</p>
-          <p><strong>[02:10]</strong> A blockchain pode ser descrita como um livro de registos partilhado — imagine uma folha de cálculo que milhares de computadores têm em simultâneo, onde ninguém pode apagar entradas antigas sem que toda a rede o saiba.</p>
-          <p><strong>[03:30]</strong> Esta propriedade — a imutabilidade — é o que torna a blockchain tão poderosa para transacções financeiras, contratos digitais, e identidade online.</p>
-          <p><strong>[04:42]</strong> No próximo episódio aprofundamos os casos de uso práticos. Obrigado por ouvirem e até já!</p>
+          <h4>[EP 1] A evolução da internet: Web1, Web2 e Web3</h4>
+          <div class="ep-sub">Transcrição completa · Isabella de Brito</div>
+
+          <div class="tr-block">
+            <span class="tr-label loc">LOC</span>
+            <p>Olá, eu sou a Isabella de Brito, e este é o Bê-a-Block: o podcast que decifra a nova internet para quem já não vai para novo.</p>
+          </div>
+
+          <div class="tr-block sound-block">
+            <span class="tr-label sound">🎵 Som</span>
+            <p>Som genérico de abertura</p>
+          </div>
+
+          <div class="tr-block">
+            <span class="tr-label loc">LOC</span>
+            <p>E neste primeiro episódio, nada melhor do que começarmos pela evolução da internet: da chamada Web1, passando pela Web2, até chegarmos à tão falada Web3. E já agora, a tentar puxar pela memória… lembra-se da primeira vez que utilizou a internet?</p>
+          </div>
+
+          <div class="tr-block sound-block">
+            <span class="tr-label sound">🎵 Som</span>
+            <p>Som dial-up</p>
+          </div>
+
+          <div class="tr-block">
+            <span class="tr-label loc">LOC</span>
+            <p>Se foi ali pelos anos 90, é bem provável que tenha sido num computador partilhado, com uma ligação super lenta, daquelas que demoravam imenso tempo a abrir uma página.</p>
+          </div>
+
+          <div class="tr-block">
+            <span class="tr-label loc">LOC</span>
+            <p>Pois bem, isso era a Web1, que era, essencialmente, uma internet para consulta, e funcionava como uma grande biblioteca digital: páginas estáticas, algum conteúdo, mas quase nenhum elemento de interação. O utilizador era apenas um leitor, ou seja, entrava num site, consumia a informação… e ia à sua vida. Nos portais de notícias, por exemplo, nem sequer existia uma secção de comentários, e, convenhamos, eu até sinto alguma saudade desse tempo. A Web1 foi fundamental porque colocou a informação à escala global, mas os limites eram evidentes: participação restrita, personalização escassa e quase nenhuma margem para a criação individual. E foi precisamente dessa necessidade de mais interação que a internet começou a evoluir… e finalmente chegamos aos anos 2000.</p>
+          </div>
+
+          <div class="tr-block sound-block">
+            <span class="tr-label sound">🎵 Som</span>
+            <p>Som separador</p>
+          </div>
+
+          <div class="tr-block">
+            <span class="tr-label loc">LOC</span>
+            <p>Com a chegada da Web2, as pessoas deixaram de ser apenas leitores, e começaram a escrever blogs, a publicar fotos, e participar em fóruns online. E assim, quase que de repente, toda a gente tinha algo a dizer.</p>
+          </div>
+
+          <div class="tr-block sound-block">
+            <span class="tr-label sound">🎵 Som</span>
+            <p>Som MSN Messenger</p>
+          </div>
+
+          <div class="tr-block">
+            <span class="tr-label loc">LOC</span>
+            <p>É também nesta altura que surgem as grandes plataformas que, ainda hoje, dominam a internet, como a Meta, na época ainda era só conhecida como Facebook. E o impacto não ficou só no mundo digital: entrou nas lojas, na restauração, nas casas de espetáculo e na forma que planeamos viagens. Já agora, imaginem um restaurante que antigamente, bastava um anúncio nas Páginas Amarelas para atrair clientes. E hoje, não ter Instagram ou TikTok é quase um risco de negócio. Ou num pequeno empreendedor que, muitas vezes, já nem precisa de um espaço físico e vende exclusivamente através de marketplaces.</p>
+          </div>
+
+          <div class="tr-block">
+            <span class="tr-label loc">LOC</span>
+            <p>Mas há uma pergunta que quase nunca fazemos: Onde ficam os nossos dados? As fotos que publicamos, as coisas que escrevemos, os vídeos que partilhamos — quem tem acesso a tudo isso, para além de nós? Na Web2, quase tudo passa por plataformas. E a verdade é que é algo cómodo para os utilizadores, funciona relativamente bem, mas tem um custo: dependência. Se a plataforma muda as regras, adaptamo-nos. Se desaparece… levamos muito pouco connosco. E é precisamente neste contexto que surge a Web3: como uma resposta a algumas das limitações da Web2. Mas a pergunta que ninguém faz em voz alta é esta: a Web3 resolve mesmo alguma coisa, ou é só mais uma trend?</p>
+          </div>
+
+          <div class="tr-block sound-block">
+            <span class="tr-label sound">🎵 Som</span>
+            <p>Som separador</p>
+          </div>
+
+          <div class="tr-block">
+            <span class="tr-label loc">LOC</span>
+            <p>A premissa da Web3 assenta numa ideia simples: infraestruturas descentralizadas (como as blockchains), sem um dono único e sem um servidor central que controle tudo. E a promessa (pelo menos em teoria) é devolver o controlo aos utilizadores, ou seja, que os seus dados sejam, de facto, seus. Que apenas pessoas e serviços autorizados por si possam ter acesso, e que os conteúdos que publica deixem de depender de uma grande corporação para estarem online. Em resumo: menos intermediários, e menos dependência.</p>
+          </div>
+
+          <div class="tr-block">
+            <span class="tr-label loc">LOC</span>
+            <p>Na prática, e como acontece com qualquer nova tecnologia, há projetos que fazem sentido, e outros que, pelo menos por agora, parecem mais complicados do que úteis. E é aqui, no Bê-a-Block, que vamos aprofundar alguns destes conceitos ligados à nova internet: descentralização, privacidade, inteligência artificial… E o impacto real que tudo isto tem na forma como vivemos, trabalhamos e olhamos para o presente — e o futuro. Porque compreender a nova internet pode ser muito mais importante do que simplesmente tentar acompanhá-la.</p>
+          </div>
+
+          <div class="tr-block">
+            <span class="tr-label loc">LOC</span>
+            <p>Obrigada por ouvir o Bê-a-Block, e até ao próximo episódio.</p>
+          </div>
         </div>
       </div>
 
+      <!-- RECURSOS -->
       <div id="panel-rec" class="tabpanel">
         <div class="rarea">
           <h4>Recursos — Episódio 1</h4>
@@ -203,6 +290,29 @@ input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400
         </div>
       </div>
     </div>
+
+    <!-- ══ SOBRE ══ -->
+    <div id="view-sobre" class="view">
+      <div class="info-panel">
+        <h3>ℹ Sobre o Bê-à-Block</h3>
+        <p>O <strong>Bê-à-Block</strong> é o podcast que busca decifrar a nova internet para quem já não vai para novo. Descentralização, blockchain, inteligência artificial, privacidade digital — são temas que dominam cada vez mais as notícias e o nosso dia a dia, mas que muitas vezes parecem explicados para quem já sabe tudo (ou por quem tenta vender algo).</p>
+        <p>Aqui explicamos tecnologia sem jargões, questionamos sem agenda e nunca assumimos que não sabes nada (e nem que nós sabemos tudo).</p>
+        <p>Afinal, não ir para novo não significa ficar para trás.</p>
+      </div>
+    </div>
+
+    <!-- ══ CONTATO ══ -->
+    <div id="view-contato" class="view">
+      <div class="info-panel">
+        <h3>✉ Contato</h3>
+        <p>Questões, sugestões ou feedback? Fala connosco:</p>
+        <div class="contact-box">
+          📬 E-mail<br>
+          <span class="email">beablock (at) proton (dot) me</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <div class="status-bar">
@@ -216,208 +326,93 @@ input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400
 
 <script>
 const audio = document.getElementById('audioEl');
+const WORKSPACE='altino-coelhos-team-3980', SLUG='first-counter-3980';
+const API_BASE=`https://api.counterapi.dev/v1/${WORKSPACE}/${SLUG}`;
+const COUNTER_GET=API_BASE, COUNTER_UP=`${API_BASE}/up`;
+const LOCAL_AUDIO={1:'./epi/epi_1.mp3',2:'./epi/epi_2.mp3',3:'./epi/epi_3.mp3',4:'./epi/epi_4.mp3'};
+const FUTURE_EPS=[{number:2,title:'Episódio 2',pubDate:'07/05/2026',duration:'–:––'},{number:3,title:'Episódio 3',pubDate:'14/05/2026',duration:'–:––'},{number:4,title:'Episódio 4',pubDate:'21/05/2026',duration:'–:––'}];
+const FEED_URL='https://media.rss.com/beablock/feed.xml', PROXY='https://corsproxy.io/?url=';
+let episodes=[],currentIdx=-1,countedThisSession=new Set();
 
-/* ── CounterAPI — correct workspace/slug from your account ─
-   Endpoint pattern: /v1/{workspace_slug}/{counter_slug}      */
-const WORKSPACE   = 'altino-coelhos-team-3980';
-const SLUG        = 'first-counter-3980';
-const API_BASE    = `https://api.counterapi.dev/v1/${WORKSPACE}/${SLUG}`;
-const COUNTER_GET = API_BASE;           // GET  → data.up_count
-const COUNTER_UP  = `${API_BASE}/up`;  // GET  → data.up_count (increments)
+function fmt(s){
+  if(!isFinite(s) || s < 0) return '–:––';
 
-/* ── Local audio map ─────────────────────────────────────── */
-const LOCAL_AUDIO = {
-  1: './epi/epi_1.mp3',
-  2: './epi/episode_2.wav',
-  3: './epi/episode_3.wav',
-  4: './epi/episode_4.wav'
-};
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
 
-const FUTURE_EPS = [
-  { number:2, title:'Episódio 2', pubDate:'07/05/2026', duration:'–:––' },
-  { number:3, title:'Episódio 3', pubDate:'14/05/2026', duration:'–:––' },
-  { number:4, title:'Episódio 4', pubDate:'21/05/2026', duration:'–:––' }
-];
+  return m + ':' + (sec < 10 ? '0' : '') + sec;
+}
 
-const FEED_URL = 'https://media.rss.com/beablock/feed.xml';
-const PROXY    = 'https://corsproxy.io/?url=';
-
-let episodes   = [];
-let currentIdx = -1;
-let countedThisSession = new Set();
-
-/* ── Helpers ─────────────────────────────────────────────── */
-function fmt(s){if(!isFinite(s)||s<0)return'–:––';const m=Math.floor(s/60),sec=Math.floor(s%60);return m+':'+(sec<10?'0':'')+sec;}
 function fmtDuration(str){
-  if(!str||str==='–:––')return'–:––';
-  const p=str.split(':').map(Number);
-  if(p.length===3)return fmt(p[0]*3600+p[1]*60+p[2]);
-  if(p.length===2)return fmt(p[0]*60+p[1]);
-  return str;
+  if(!str) return '–:––';
+
+  str = String(str).trim();
+
+  if(str === '–:––') return str;
+
+  const parts = str.split(':').map(n => Number(n));
+
+  // Invalid numbers → fallback
+  if(parts.some(n => isNaN(n))) return '–:––';
+
+  if(parts.length === 3){
+    return fmt(parts[0]*3600 + parts[1]*60 + parts[2]);
+  }
+
+  if(parts.length === 2){
+    return fmt(parts[0]*60 + parts[1]);
+  }
+
+  // If it's just seconds like "123"
+  if(parts.length === 1){
+    return fmt(parts[0]);
+  }
+
+  return '–:––';
 }
 function fmtDate(str){if(!str)return'–';try{return new Date(str).toLocaleDateString('pt-PT');}catch(e){return str;}}
-function setStatus(msg,state){
-  document.getElementById('statusMsg').textContent=msg;
-  document.getElementById('statusDot').className='sdot '+(state||'');
-}
+function setStatus(msg,state){document.getElementById('statusMsg').textContent=msg;document.getElementById('statusDot').className='sdot '+(state||'');}
+function displayCount(n){const v=(n===null||n===undefined||isNaN(Number(n)))?'–':Number(n).toLocaleString('pt-PT');document.getElementById('sidebarPlays').textContent=v;const b=document.getElementById('plays-badge-0');if(b)b.textContent=v+' ▶';}
+async function fetchCount(){try{const r=await fetch(COUNTER_GET);const j=await r.json();displayCount(j?.data?.up_count);}catch(e){displayCount(null);}}
+async function incrementCount(n){if(countedThisSession.has(n))return;countedThisSession.add(n);try{const r=await fetch(COUNTER_UP);const j=await r.json();displayCount(j?.data?.up_count);}catch(e){}}
 
-/* ── Display counter value ───────────────────────────────── */
-function displayCount(n){
-  const v = (n===null||n===undefined||isNaN(Number(n))) ? '–' : Number(n).toLocaleString('pt-PT');
-  document.getElementById('sidebarPlays').textContent = v;
-  const b = document.getElementById('plays-badge-0');
-  if(b) b.textContent = v + ' ▶';
-}
-
-/* ── Fetch current count (read-only, no increment) ──────── */
-async function fetchCount(){
-  try{
-    const res  = await fetch(COUNTER_GET);
-    const json = await res.json();
-    /* Response structure: { code:"200", data:{ up_count:N, ... } } */
-    displayCount(json?.data?.up_count);
-  } catch(e){
-    displayCount(null);
-  }
-}
-
-/* ── Increment counter (once per episode per session) ────── */
-async function incrementCount(epNumber){
-  if(countedThisSession.has(epNumber)) return;
-  countedThisSession.add(epNumber);
-  try{
-    const res  = await fetch(COUNTER_UP);
-    const json = await res.json();
-    displayCount(json?.data?.up_count);
-  } catch(e){ /* non-critical — player still works */ }
-}
-
-/* ── RSS fetch ───────────────────────────────────────────── */
 async function fetchFeed(){
   setStatus('A carregar feed RSS…','loading');
   let xml=null;
-  for(const url of [FEED_URL, PROXY+encodeURIComponent(FEED_URL)]){
-    try{
-      const res=await fetch(url); if(!res.ok)continue;
-      const doc=new DOMParser().parseFromString(await res.text(),'text/xml');
-      if(!doc.querySelector('parsererror')){xml=doc;break;}
-    }catch(e){}
+  for(const url of [FEED_URL,PROXY+encodeURIComponent(FEED_URL)]){
+    try{const res=await fetch(url);if(!res.ok)continue;const doc=new DOMParser().parseFromString(await res.text(),'text/xml');if(!doc.querySelector('parsererror')){xml=doc;break;}}catch(e){}
   }
-
-  const rssEps = xml
-    ? [...xml.querySelectorAll('item')].reverse().map((item,i)=>({
-        number:i+1,
-        title:item.querySelector('title')?.textContent?.trim()||`Episódio ${i+1}`,
-        pubDate:item.querySelector('pubDate')?.textContent||'',
-        duration:item.querySelector('duration')?.textContent||'',
-        inRSS:true
-      }))
-    : [{number:1,title:'Ep. 1 — A evolução da internet: Web1, Web2 e Web3',pubDate:'Wed, 30 Apr 2026',duration:'4:42',inRSS:true}];
-
+  const rssEps=xml?[...xml.querySelectorAll('item')].reverse().map((item,i)=>({number:i+1,title:item.querySelector('title')?.textContent?.trim()||`Episódio ${i+1}`,pubDate:item.querySelector('pubDate')?.textContent||'',duration:item.querySelector('duration')?.textContent||'',inRSS:true})):[{number:1,title:'Ep. 1 — A evolução da internet: Web1, Web2 e Web3',pubDate:'Wed, 30 Apr 2026',duration:'4:42',inRSS:true}];
   const rssNumbers=new Set(rssEps.map(e=>e.number));
   const placeholders=FUTURE_EPS.filter(e=>!rssNumbers.has(e.number)).map(e=>({...e,inRSS:false}));
-
-  episodes=[...rssEps,...placeholders]
-    .sort((a,b)=>a.number-b.number)
-    .map(ep=>({...ep,localAudio:ep.inRSS?(LOCAL_AUDIO[ep.number]||null):null}));
-
-  renderTable();
-  primeFirst();
-
-  const avail=episodes.filter(e=>e.inRSS).length;
-  const msg=xml
-    ?`Feed RSS carregado — ${avail} episódio(s) disponível(is) de ${episodes.length}`
-    :'Feed RSS indisponível — a usar dados locais.';
-  setStatus(msg, xml?'ok':'err');
+  episodes=[...rssEps,...placeholders].sort((a,b)=>a.number-b.number).map(ep=>({...ep,localAudio:ep.inRSS?(LOCAL_AUDIO[ep.number]||null):null}));
+  renderTable();primeFirst();
+  setStatus(xml?`Feed RSS carregado — ${episodes.filter(e=>e.inRSS).length} episódio(s) de ${episodes.length}`:'Feed RSS indisponível — dados locais.',xml?'ok':'err');
 }
 
-/* ── Render table ────────────────────────────────────────── */
 function renderTable(){
   document.getElementById('epTbody').innerHTML=episodes.map((ep,i)=>{
-    if(ep.inRSS){
-      const badge=ep.number===1?`<span class="plays-badge" id="plays-badge-0">… ▶</span>`:'';
-      return `<tr id="row${i}" class="avail" onclick="playRow(${i})">
-        <td>${ep.title}</td><td>${fmtDate(ep.pubDate)}</td>
-        <td>${fmtDuration(ep.duration)}</td>
-        <td><span class="sdispon">✔ Disponível</span>${badge}</td>
-      </tr>`;
-    }
-    return `<tr id="row${i}" class="future">
-      <td>${ep.title}</td><td>${ep.pubDate}</td>
-      <td>${ep.duration}</td>
-      <td><span class="saguarde">⌛ Aguarde</span></td>
-    </tr>`;
+    if(ep.inRSS){const badge=ep.number===1?``:'';return`<tr id="row${i}" class="avail" onclick="playRow(${i})"><td>${ep.title}</td><td>${fmtDate(ep.pubDate)}</td><td>${fmtDuration(ep.duration)}</td><td><span class="sdispon">✔ Disponível</span>${badge}</td></tr>`;}
+    return`<tr id="row${i}" class="future"><td>${ep.title}</td><td>${ep.pubDate}</td><td>${ep.duration}</td><td><span class="saguarde">⌛ Aguarde</span></td></tr>`;
   }).join('');
-  /* refresh badge with live count after DOM is ready */
   fetchCount();
 }
-
-/* ── Prime player on first available ep (no autoplay) ────── */
-function primeFirst(){
-  const i=episodes.findIndex(e=>e.inRSS);
-  if(i<0)return;
-  currentIdx=i;
-  document.getElementById('nowPlaying').textContent=episodes[i].title;
-  document.getElementById('timeDisp').textContent='0:00 / '+fmtDuration(episodes[i].duration);
-  document.getElementById('playBtn').disabled=false;
-  highlightRow(i); updateNavBtns();
-}
-
-/* ── Playback ────────────────────────────────────────────── */
-function playRow(i){
-  if(!episodes[i]?.localAudio)return;
-  if(currentIdx===i&&audio.src){togglePlay();return;}
-  currentIdx=i;
-  audio.src=episodes[i].localAudio;
-  audio.play()
-    .then(()=>incrementCount(episodes[i].number))
-    .catch(()=>setStatus('Ficheiro não encontrado: '+episodes[i].localAudio,'err'));
-  document.getElementById('nowPlaying').textContent='A reproduzir: '+episodes[i].title;
-  highlightRow(i); updateNavBtns();
-}
-function togglePlay(){
-  if(!audio.src&&currentIdx>=0&&episodes[currentIdx]?.localAudio) audio.src=episodes[currentIdx].localAudio;
-  if(!audio.src)return;
-  if(audio.paused){audio.play().then(()=>incrementCount(episodes[currentIdx].number)).catch(()=>{});}
-  else audio.pause();
-}
+function primeFirst(){const i=episodes.findIndex(e=>e.inRSS);if(i<0)return;currentIdx=i;document.getElementById('nowPlaying').textContent=episodes[i].title;document.getElementById('timeDisp').textContent='0:00 / '+fmtDuration(episodes[i].duration);document.getElementById('playBtn').disabled=false;highlightRow(i);updateNavBtns();}
+function playRow(i){if(!episodes[i]?.localAudio)return;if(currentIdx===i&&audio.src){togglePlay();return;}currentIdx=i;audio.src=episodes[i].localAudio;audio.play().then(()=>incrementCount(episodes[i].number)).catch(()=>setStatus('Ficheiro não encontrado: '+episodes[i].localAudio,'err'));document.getElementById('nowPlaying').textContent='A reproduzir: '+episodes[i].title;highlightRow(i);updateNavBtns();}
+function togglePlay(){if(!audio.src&&currentIdx>=0&&episodes[currentIdx]?.localAudio)audio.src=episodes[currentIdx].localAudio;if(!audio.src)return;if(audio.paused){audio.play().then(()=>incrementCount(episodes[currentIdx].number)).catch(()=>{});}else audio.pause();}
 function highlightRow(i){document.querySelectorAll('#epTbody tr').forEach((r,j)=>r.classList.toggle('playing',j===i));}
-function updateNavBtns(){
-  document.getElementById('prevBtn').disabled=currentIdx<=0||!episodes.slice(0,currentIdx).some(e=>e.localAudio);
-  document.getElementById('nextBtn').disabled=currentIdx>=episodes.length-1||!episodes.slice(currentIdx+1).some(e=>e.localAudio);
-}
+function updateNavBtns(){document.getElementById('prevBtn').disabled=currentIdx<=0||!episodes.slice(0,currentIdx).some(e=>e.localAudio);document.getElementById('nextBtn').disabled=currentIdx>=episodes.length-1||!episodes.slice(currentIdx+1).some(e=>e.localAudio);}
 document.getElementById('prevBtn').addEventListener('click',()=>{for(let i=currentIdx-1;i>=0;i--)if(episodes[i]?.localAudio){playRow(i);break;}});
 document.getElementById('nextBtn').addEventListener('click',()=>{for(let i=currentIdx+1;i<episodes.length;i++)if(episodes[i]?.localAudio){playRow(i);break;}});
-
 function toggleMute(){audio.muted=!audio.muted;}
 function setVol(v){audio.volume=v/100;}
-function seekClick(e){
-  if(!audio.duration)return;
-  const r=e.currentTarget.getBoundingClientRect();
-  audio.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*audio.duration;
-}
-audio.addEventListener('timeupdate',()=>{
-  const pct=audio.duration?(audio.currentTime/audio.duration)*100:0;
-  document.getElementById('seekFill').style.width=pct+'%';
-  document.getElementById('seekThumb').style.left=pct+'%';
-  document.getElementById('timeDisp').textContent=fmt(audio.currentTime)+' / '+fmt(audio.duration);
-});
-audio.addEventListener('play', ()=>{document.getElementById('playBtn').textContent='⏸';});
+function seekClick(e){if(!audio.duration)return;const r=e.currentTarget.getBoundingClientRect();audio.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*audio.duration;}
+audio.addEventListener('timeupdate',()=>{const pct=audio.duration?(audio.currentTime/audio.duration)*100:0;document.getElementById('seekFill').style.width=pct+'%';document.getElementById('seekThumb').style.left=pct+'%';document.getElementById('timeDisp').textContent=fmt(audio.currentTime)+' / '+fmt(audio.duration);});
+audio.addEventListener('play',()=>{document.getElementById('playBtn').textContent='⏸';});
 audio.addEventListener('pause',()=>{document.getElementById('playBtn').textContent='▶';});
-audio.addEventListener('ended',()=>{
-  document.getElementById('playBtn').textContent='▶';
-  for(let i=currentIdx+1;i<episodes.length;i++)if(episodes[i]?.localAudio){playRow(i);break;}
-});
+audio.addEventListener('ended',()=>{document.getElementById('playBtn').textContent='▶';for(let i=currentIdx+1;i<episodes.length;i++)if(episodes[i]?.localAudio){playRow(i);break;}});
 audio.addEventListener('error',()=>{if(audio.src)setStatus('Ficheiro não encontrado: '+(episodes[currentIdx]?.localAudio||'–'),'err');});
-
-function setNav(el){document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));el.classList.add('active');}
-function switchTab(id,el){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('panel-'+id).classList.add('active');
-}
-
-fetchCount();
-fetchFeed();
+function switchView(id,navEl){document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));navEl.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('view-'+id).classList.add('active');}
+function switchTab(id,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));el.classList.add('active');document.getElementById('panel-'+id).classList.add('active');}
+fetchCount();fetchFeed();
 </script>
