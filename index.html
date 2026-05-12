@@ -130,7 +130,7 @@ input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400
       <div class="ni" onclick="switchView('contato',this)"><span class="nic">✉</span>Contato</div>
       <div class="sf">
         Status: <span class="online">Online</span><br>
-        Ouvintes: <strong>37</strong><br>
+        Ouvintes: <strong>43</strong><br>
         <!-- Reproduções: <span class="plays-count" id="sidebarPlays">…</span> -->
       </div>
     </div>
@@ -204,8 +204,13 @@ input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400
           </div>
         </div>
       </div>
-
-      <!-- TRANSCRIÇÃO -->
+<div id="panel-tr" class="tabpanel">
+  <div class="tarea" id="trContent">
+    <p style="color:#888;font-style:italic">Selecione um episódio disponível para ver a transcrição.</p>
+  </div>
+</div>
+      <!-- 
+    
       <div id="panel-tr" class="tabpanel">
         <div class="tarea">
           <h4>[EP 1] A evolução da internet: Web1, Web2 e Web3</h4>
@@ -286,7 +291,7 @@ input[type=range].vol{width:90px;height:14px;cursor:pointer;accent-color:#3a9400
             <p>Obrigada por ouvir o Bê-a-Block, e até ao próximo episódio.</p>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- RECURSOS -->
       <div id="panel-rec" class="tabpanel">
@@ -352,6 +357,97 @@ const FUTURE_EPS=[{number:2,title:'Episódio 2',pubDate:'08/05/2026',duration:'�
 const FEED_URL='https://media.rss.com/beablock/feed.xml', PROXY='https://corsproxy.io/?url=';
 let episodes=[],currentIdx=-1,countedThisSession=new Set();
 
+
+const TRANSCRIPTIONS = {
+  1: `
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>Olá, eu sou a Isabella de Brito, e este é o Bê-a-Block: o podcast que decifra a nova internet para quem já não vai para novo.</p></div>
+
+    <div class="tr-block sound-block"><span class="tr-label sound">🎵 Som</span><p>Som genérico de abertura</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>E neste primeiro episódio, nada melhor do que começarmos pela evolução da internet: da chamada Web1, passando pela Web2, até chegarmos à tão falada Web3. E já agora, a tentar puxar pela memória… lembra-se da primeira vez que utilizou a internet?</p></div>
+
+    <div class="tr-block sound-block"><span class="tr-label sound">🎵 Som</span><p>Som dial-up</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>Se foi ali pelos anos 90, é bem provável que tenha sido num computador partilhado, com uma ligação super lenta, daquelas que demoravam imenso tempo a abrir uma página.</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>Pois bem, isso era a Web1, que era, essencialmente, uma internet para consulta, e funcionava como uma grande biblioteca digital: páginas estáticas, algum conteúdo, mas quase nenhum elemento de interação. O utilizador era apenas um leitor, ou seja, entrava num site, consumia a informação… e ia à sua vida. Nos portais de notícias, por exemplo, nem sequer existia uma secção de comentários, e, convenhamos, eu até sinto alguma saudade desse tempo. A Web1 foi fundamental porque colocou a informação à escala global, mas os limites eram evidentes: participação restrita, personalização escassa e quase nenhuma margem para a criação individual. E foi precisamente dessa necessidade de mais interação que a internet começou a evoluir… e finalmente chegamos aos anos 2000.</p></div>
+
+    <div class="tr-block sound-block"><span class="tr-label sound">🎵 Som</span><p>Som separador</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>Com a chegada da Web2, as pessoas deixaram de ser apenas leitores, e começaram a escrever blogs, a publicar fotos, e participar em fóruns online. E assim, quase que de repente, toda a gente tinha algo a dizer.</p></div>
+
+    <div class="tr-block sound-block"><span class="tr-label sound">🎵 Som</span><p>Som MSN Messenger</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>É também nesta altura que surgem as grandes plataformas que, ainda hoje, dominam a internet, como a Meta, na época ainda era só conhecida como Facebook. E o impacto não ficou só no mundo digital: entrou nas lojas, na restauração, nas casas de espetáculo e na forma que planeamos viagens. Já agora, imaginem um restaurante que antigamente, bastava um anúncio nas Páginas Amarelas para atrair clientes. E hoje, não ter Instagram ou TikTok é quase um risco de negócio. Ou num pequeno empreendedor que, muitas vezes, já nem precisa de um espaço físico e vende exclusivamente através de marketplaces.</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>Mas há uma pergunta que quase nunca fazemos: Onde ficam os nossos dados? As fotos que publicamos, as coisas que escrevemos, os vídeos que partilhamos — quem tem acesso a tudo isso, para além de nós? Na Web2, quase tudo passa por plataformas. E a verdade é que é algo cómodo para os utilizadores, funciona relativamente bem, mas tem um custo: dependência. Se a plataforma muda as regras, adaptamo-nos. Se desaparece… levamos muito pouco connosco. E é precisamente neste contexto que surge a Web3: como uma resposta a algumas das limitações da Web2. Mas a pergunta que ninguém faz em voz alta é esta: a Web3 resolve mesmo alguma coisa, ou é só mais uma trend?</p></div>
+
+    <div class="tr-block sound-block"><span class="tr-label sound">🎵 Som</span><p>Som separador</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>A premissa da Web3 assenta numa ideia simples: infraestruturas descentralizadas (como as blockchains), sem um dono único e sem um servidor central que controle tudo. E a promessa (pelo menos em teoria) é devolver o controlo aos utilizadores, ou seja, que os seus dados sejam, de facto, seus. Que apenas pessoas e serviços autorizados por si possam ter acesso, e que os conteúdos que publica deixem de depender de uma grande corporação para estarem online. Em resumo: menos intermediários, e menos dependência.</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>Na prática, e como acontece com qualquer nova tecnologia, há projetos que fazem sentido, e outros que, pelo menos por agora, parecem mais complicados do que úteis. E é aqui, no Bê-a-Block, que vamos aprofundar alguns destes conceitos ligados à nova internet: descentralização, privacidade, inteligência artificial… E o impacto real que tudo isto tem na forma como vivemos, trabalhamos e olhamos para o presente — e o futuro. Porque compreender a nova internet pode ser muito mais importante do que simplesmente tentar acompanhá-la.</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>Obrigada por ouvir o Bê-a-Block, e até ao próximo episódio.</p></div>
+  `,
+2: `
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>Olá, eu sou a Isabella de Brito, e este é o Bê-a-Block: o podcast que decifra a nova internet para quem já não vai para novo.</p></div>
+
+    <div class="tr-block sound-block"><span class="tr-label sound">🎵 Som</span><p>Som genérico de abertura</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>No episódio de hoje, vamos falar sobre a descentralização da internet: desde as vantagens até aos aspetos menos positivos. Mas antes de entrarmos no tema, já parou para pensar nas razões pelas quais por vezes não conseguimos aceder a certos websites ou aplicações?</p></div>
+
+    <div class="tr-block sound-block"><span class="tr-label sound">🎵 Som</span><p>Efeito sonoro de falha na ligação dial-up</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>Bem, as primeiras hipóteses (e as mais óbvias) são que talvez não tenha pago a fatura da internet, ou está numa zona sem rede. Mas às vezes, e é mais comum do que parece, pode estar a acontecer uma outage, ou seja, uma interrupção de serviço. Pode ser um cabo partido, uma falha numa rede de transmissão, ou um problema naquilo a que chamamos popularmente de cloud. Ok, mas afinal, o que é esta tal "nuvem", e por que razão não está necessariamente no céu?</p></div>
+
+    <div class="tr-block sound-block"><span class="tr-label sound">🎵 Som</span><p>Som separador</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>A "nuvem" refere-se a um conjunto de servidores ligados pela internet, capazes de armazenar software e bases de dados. Estes servidores estão localizados em centros de processamento de dados (ou data centers, em inglês) espalhados por todo o mundo. Estima-se que existam cerca de 12 mil data centers no mundo, sendo que um terço deles estão localizados nos Estados Unidos. Já agora, a título de curiosidade: até 2024, existiam 33 data centers em Portugal, sendo 20 desses localizados na Grande Lisboa. E é aqui que começa a perceber porque é que a centralização pode ser um problema.</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>Ao utilizar a nuvem, os utilizadores e as empresas não precisam de gerir os seus próprios servidores nem de executar aplicações nas suas próprias máquinas. E esta distribuição permite também que o conteúdo chegue mais rapidamente a quem o acede, por exemplo: uma plataforma como o Google tem "cópias" dos seus dados espalhadas por data centers em todo o mundo, o que garante velocidade e estabilidade em qualquer país. Já o site de uma floricultura na Austrália pode demorar alguns segundos a mais a carregar em Portugal, simplesmente porque está hospedado apenas em servidores daquele país.</p></div>
+
+    <div class="tr-block sound-block"><span class="tr-label sound">🎵 Som</span><p>Som separador</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>A internet que usamos hoje é, em grande parte, centralizada, ou seja, depende de um número relativamente limitado de grandes infraestruturas, e de um número ainda menor de empresas que as controlam, como a AWS, Microsoft, e a própria Google, que através dos seus serviços de cloud, armazenam uma parte enorme da internet mundial. O que significa que quando uma delas falha (e já aconteceu, e acontece todos os anos) uma boa parte da internet vai com ela. Uma interrupção num único fornecedor de cloud pode deixar offline desde o Whatsapp ao Netflix, sistemas de pagamento, até serviços essenciais como hospitais e companhias aéreas. Tudo isso para dizer que em países diferentes e em setores completamente distintos, todos dependem da mesma infraestrutura, e um simples erro num sistema centralizado pode ter consequências globais.</p></div>
+
+    <div class="tr-block sound-block"><span class="tr-label sound">🎵 Som</span><p>Efeito sonoro de erro no Windows</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>E é exatamente aqui que entra o conceito de descentralização, e que propõe uma lógica diferente. Em vez de depender de um servidor central (ou de um conjunto pequeno de servidores controlados pela mesma empresa), a informação é distribuída por uma rede de computadores independentes, espalhados pelo mundo. Ou seja, sem um ponto único de falha e sem um dono único. A ideia não é nova e, na verdade, a internet em sua origem foi desenvolvida com princípios descentralizados, mas ao longo dos anos, por conveniência, velocidade e negócio, foi-se concentrando cada vez mais nas mãos de poucos. E a Web3 tenta, em parte, inverter esse caminho.</p></div>
+
+    <div class="tr-block sound-block"><span class="tr-label sound">🎵 Som</span><p>Som separador</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>Mas como tudo na vida, a descentralização não é ainda uma solução perfeita. Os aspetos positivos seria uma maior resistência a falhas, mais controlo para o utilizador sobre os seus próprios dados, e menos dependência de grandes corporações. Do lado menos positivo, é o facto de que sistemas descentralizados são, muitas vezes, mais lentos e mais complexos de usar, e enquanto a ausência de um responsável central pode ser uma vantagem, também pode ser um problema quando algo corre mal e não há ninguém a quem recorrer (ou simplesmente por a culpa).</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>Como quase tudo em tecnologia, nem sempre é fácil chegar a uma resposta de que "um é melhor do que o outro": tudo depende do contexto, do uso, e do que estamos dispostos a ceder. Em resumo: a internet que usamos hoje está, em grande parte, em infraestruturas centralizadas, que são convenientes, rápidas, mas vulneráveis e concentradas em poucas mãos. A descentralização propõe distribuir esse poder, com vários benefícios, mas também com limitações que vale a pena tentar compreender.</p></div>
+
+    <div class="tr-block"><span class="tr-label loc">LOC</span>
+    <p>Obrigada por ouvir o Bê-a-Block, e até ao próximo episódio.</p></div>
+
+    <div class="tr-block sound-block"><span class="tr-label sound">🎵 Som</span><p>Som genérico de encerramento</p></div>
+  `,
+};
+
+
 function fmt(s){
   if(!isFinite(s) || s < 0) return '–:––';
 
@@ -388,7 +484,14 @@ function fmtDuration(str){
 
   return '–:––';
 }
-function fmtDate(str){{return '01/05/2026';}}
+const EP_DATES = {
+  1: '01/05/2026',
+  2: '08/05/2026',
+  3: '15/05/2026',
+  4: '22/05/2026'
+};
+function fmtDate(epNumber){ return EP_DATES[epNumber] || '–'; }
+
 
 // function fmtDate(str){if(!str)return'–';try{return new Date(str).toLocaleDateString('pt-PT');}catch(e){return str;}}
 function setStatus(msg,state){document.getElementById('statusMsg').textContent=msg;document.getElementById('statusDot').className='sdot '+(state||'');}
@@ -412,15 +515,37 @@ async function fetchFeed(){
 
 function renderTable(){
   document.getElementById('epTbody').innerHTML=episodes.map((ep,i)=>{
-    if(ep.inRSS){const badge=ep.number===1?``:'';return`<tr id="row${i}" class="avail" onclick="playRow(${i})"><td>${ep.title}</td><td>${fmtDate(ep.pubDate)}</td><td>${fmtDuration(ep.duration)}</td><td><span class="sdispon">✔ Disponível</span>${badge}</td></tr>`;}
+    if(ep.inRSS){const badge=ep.number===1?``:'';return`<tr id="row${i}" class="avail" onclick="playRow(${i})"><td>${ep.title}</td><td>${fmtDate(ep.number)}</td><td>${fmtDuration(ep.duration)}</td><td><span class="sdispon">✔ Disponível</span>${badge}</td></tr>`;}
     return`<tr id="row${i}" class="future"><td>${ep.title}</td><td>${ep.pubDate}</td><td>${ep.duration}</td><td><span class="saguarde">⌛ Aguarde</span></td></tr>`;
   }).join('');
   fetchCount();
 }
+
+function renderTranscription(epIdx) {
+  const ep = episodes[epIdx];
+  if (!ep) return;
+  const html = TRANSCRIPTIONS[ep.number];
+  const container = document.getElementById('trContent');
+  if (!html) {
+    container.innerHTML = `
+      <h4>${ep.title}</h4>
+      <div class="ep-sub">Transcrição ainda não disponível.</div>`;
+    return;
+  }
+  container.innerHTML = `
+    <h4>${ep.title}</h4>
+    <div class="ep-sub">Transcrição completa · Isabella de Brito</div>
+    ${html}`;
+}
+
+
 function primeFirst(){const i=episodes.findIndex(e=>e.inRSS);if(i<0)return;currentIdx=i;document.getElementById('nowPlaying').textContent=episodes[i].title;document.getElementById('timeDisp').textContent='0:00 / '+fmtDuration(episodes[i].duration);document.getElementById('playBtn').disabled=false;highlightRow(i);updateNavBtns();}
-function playRow(i){if(!episodes[i]?.localAudio)return;if(currentIdx===i&&audio.src){togglePlay();return;}currentIdx=i;audio.src=episodes[i].localAudio;audio.play().then(()=>incrementCount(episodes[i].number)).catch(()=>setStatus('Ficheiro não encontrado: '+episodes[i].localAudio,'err'));document.getElementById('nowPlaying').textContent='A reproduzir: '+episodes[i].title;highlightRow(i);updateNavBtns();}
+function playRow(i){if(!episodes[i]?.localAudio)return;if(currentIdx===i&&audio.src){togglePlay();return;}currentIdx=i;audio.src=episodes[i].localAudio;audio.play().then(()=>incrementCount(episodes[i].number)).catch(()=>setStatus('Ficheiro não encontrado: '+episodes[i].localAudio,'err'));document.getElementById('nowPlaying').textContent='A reproduzir: '+episodes[i].title;highlightRow(i);renderTranscription(i);updateNavBtns();}
 function togglePlay(){if(!audio.src&&currentIdx>=0&&episodes[currentIdx]?.localAudio)audio.src=episodes[currentIdx].localAudio;if(!audio.src)return;if(audio.paused){audio.play().then(()=>incrementCount(episodes[currentIdx].number)).catch(()=>{});}else audio.pause();}
 function highlightRow(i){document.querySelectorAll('#epTbody tr').forEach((r,j)=>r.classList.toggle('playing',j===i));}
+
+
+
 function updateNavBtns(){document.getElementById('prevBtn').disabled=currentIdx<=0||!episodes.slice(0,currentIdx).some(e=>e.localAudio);document.getElementById('nextBtn').disabled=currentIdx>=episodes.length-1||!episodes.slice(currentIdx+1).some(e=>e.localAudio);}
 document.getElementById('prevBtn').addEventListener('click',()=>{for(let i=currentIdx-1;i>=0;i--)if(episodes[i]?.localAudio){playRow(i);break;}});
 document.getElementById('nextBtn').addEventListener('click',()=>{for(let i=currentIdx+1;i<episodes.length;i++)if(episodes[i]?.localAudio){playRow(i);break;}});
